@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+import RoomCard from '../components/RoomCard.astro';
+import { listRoomsWithAvailability } from '../lib/bookings.mjs';
+import { toISODate } from '../lib/time.mjs';
+import rooms from '../data/rooms.json';
+import bookings from '../data/bookings.json';
+
+const today = toISODate(new Date('2026-10-22T19:43:00'));
+const selectedDate = today;
+const roomsWithStatus = listRoomsWithAvailability(rooms, bookings, selectedDate, new Date('2026-10-22T19:43:00'));
+---
+
+<Layout title="Salas" activeNav="salas">
+  <section class="page-section">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <p class="overline">Disponibilidad</p>
+          <h1>Salas</h1>
+          <p class="subtitle">Consulta la ocupación de cada sala para la fecha que elijas.</p>
+        </div>
+        <div class="date-field">
+          <label for="date">Fecha</label>
+          <input type="date" id="date" name="date" value={selectedDate} min={today} />
+        </div>
+      </div>
+
+      <p class="no-results hidden" id="no-results" role="status">No hay salas disponibles para la fecha y horario consultados.</p>
+
+      <div class="rooms-grid" id="rooms-grid">
+        {roomsWithStatus.map((room) => <RoomCard room={room} />)}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    import { getBookings, getRooms } from '../lib/store.mjs';
+    import { listRoomsWithAvailability } from '../lib/bookings.mjs';
+    import { isPastDate } from '../lib/time.mjs';
+
+    const dateInput = document.getElementById('date');
+    const grid = document.getElementById('rooms-grid');
+    const noResults = document.getElementById('no-results');
+    const today = '2026-10-22';
+
+    function render(date) {
+      const now = new Date(`${today}T19:43:00`);
+      const rooms = getRooms();
+      const bookings = getBookings();
+      const withStatus = listRoomsWithAvailability(rooms, bookings, date, now);
+
+      if (isPastDate(date, now)) {
+        grid.classList.add('hidden');
+        noResults.classList.remove('hidden');
+        noResults.textContent = 'No hay salas disponibles para fechas pasadas. Elige hoy o una fecha futura.';
+        return;
+      }
+
+      const cards = withStatus.map((room) => {
+        const labels = {
+          available: 'Disponible todo el día',
+          partial: 'Disponibilidad parcial',
+          occupied: 'No disponible',
+        };
+        const disabled = room.status === 'occupied' ? 'data-disabled="true"' : '';
+        return `
+          <article class="room-card" data-room-id="${room.id}">
+            <div class="room-header">
+              <h3>${room.name}</h3>
+              <span class="capacity">${room.capacity} plazas</span>
+            </div>
+            <p class="description">${room.description}</p>
+            <p class="status" data-status="${room.status}">
+              <span class="status-dot" aria-hidden="true"></span>
+              ${labels[room.status]}
+            </p>
+            <a href="/reservar?room=${room.id}" class="reserve-link" ${disabled}>Reservar</a>
+          </article>
+        `;
+      }).join('');
+
+      grid.innerHTML = cards;
+      grid.classList.remove('hidden');
+      noResults.classList.add('hidden');
+    }
+
+    if (dateInput) {
+      dateInput.min = today;
+      dateInput.addEventListener('change', (e) => render(e.target.value));
+    }
+
+    render(dateInput?.value || today);
+  </script>
+
+  <style>
+    .page-section {
+      padding: var(--space-6) 0;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-4);
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+    }
+    .overline {
+      margin: 0 0 var(--space-2);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+    }
+    .page-header h1 {
+      margin: 0 0 var(--space-2);
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .subtitle {
+      margin: 0;
+      color: var(--text-secondary);
+    }
+    .date-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      min-width: 160px;
+    }
+    .date-field label {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .date-field input {
+      padding: var(--space-2) var(--space-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-4);
+    }
+    .no-results {
+      color: var(--text-secondary);
+      padding: var(--space-5);
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</Layout>

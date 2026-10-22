@@ -1,0 +1,175 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { listFutureBookings } from '../lib/bookings.mjs';
+import { formatBookingRange, formatDuration } from '../lib/time.mjs';
+import rooms from '../data/rooms.json';
+import bookings from '../data/bookings.json';
+
+const now = new Date('2026-10-22T19:43:00');
+const future = listFutureBookings(bookings, now);
+const roomMap = Object.fromEntries(rooms.map((r) => [r.id, r]));
+---
+
+<Layout title="Mis reservas" activeNav="mis-reservas">
+  <section class="page-section">
+    <div class="container narrow">
+      <p class="overline">Tus reservas</p>
+      <h1>Mis reservas</h1>
+      <p class="subtitle">Próximas reservas. Puedes cancelar las que aún no han empezado.</p>
+
+      <ul class="booking-list" id="booking-list">
+        {future.map((booking) => (
+          <li class="booking-item" data-booking-id={booking.id}>
+            <div class="booking-info">
+              <span class="range">{formatBookingRange(booking.date, booking.start, booking.duration)}</span>
+              <span class="details">
+                <strong>{roomMap[booking.roomId]?.name || booking.roomId}</strong> · {formatDuration(booking.duration)}
+              </span>
+            </div>
+            <button type="button" class="cancel-button" data-cancel={booking.id}>Cancelar</button>
+          </li>
+        ))}
+      </ul>
+
+      <p class="empty hidden" id="empty" role="status">No tienes reservas próximas.</p>
+    </div>
+  </section>
+
+  <script>
+    import { getBookings, getRooms, removeBooking } from '../lib/store.mjs';
+    import { listFutureBookings } from '../lib/bookings.mjs';
+    import { formatBookingRange, formatDuration } from '../lib/time.mjs';
+
+    const list = document.getElementById('booking-list');
+    const empty = document.getElementById('empty');
+    const today = '2026-10-22';
+    const now = new Date(`${today}T19:43:00`);
+    const rooms = getRooms();
+    const roomMap = Object.fromEntries(rooms.map((r) => [r.id, r]));
+
+    function render() {
+      const bookings = listFutureBookings(getBookings(), now);
+
+      if (bookings.length === 0) {
+        list.classList.add('hidden');
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      list.innerHTML = bookings
+        .map((b) => `
+          <li class="booking-item" data-booking-id="${b.id}">
+            <div class="booking-info">
+              <span class="range">${formatBookingRange(b.date, b.start, b.duration)}</span>
+              <span class="details">
+                <strong>${roomMap[b.roomId]?.name || b.roomId}</strong> · ${formatDuration(b.duration)}
+              </span>
+            </div>
+            <button type="button" class="cancel-button" data-cancel="${b.id}">Cancelar</button>
+          </li>
+        `)
+        .join('');
+      list.classList.remove('hidden');
+      empty.classList.add('hidden');
+
+      list.querySelectorAll('[data-cancel]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-cancel');
+          removeBooking(id);
+          render();
+        });
+      });
+    }
+
+    render();
+  </script>
+
+  <style>
+    .page-section {
+      padding: var(--space-6) 0;
+    }
+    .narrow {
+      max-width: 720px;
+    }
+    .overline {
+      margin: 0 0 var(--space-2);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+    }
+    h1 {
+      margin: 0 0 var(--space-2);
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .subtitle {
+      margin: 0 0 var(--space-5);
+      color: var(--text-secondary);
+    }
+    .booking-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .booking-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .booking-info {
+      display: flex;
+      gap: var(--space-4);
+      align-items: baseline;
+      flex-wrap: wrap;
+    }
+    .range {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      font-size: 13px;
+      color: var(--text-secondary);
+      min-width: 180px;
+    }
+    .details {
+      font-size: 14px;
+    }
+    .cancel-button {
+      background: transparent;
+      border: 1px solid var(--danger-text);
+      color: var(--danger-text);
+      border-radius: var(--radius);
+      padding: var(--space-2) var(--space-3);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .cancel-button:hover {
+      background: color-mix(in srgb, var(--danger-text) 10%, transparent);
+    }
+    .empty {
+      text-align: center;
+      padding: var(--space-5);
+      color: var(--text-secondary);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .hidden {
+      display: none;
+    }
+    @media (max-width: 640px) {
+      .booking-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .booking-info {
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+    }
+  </style>
+</Layout>

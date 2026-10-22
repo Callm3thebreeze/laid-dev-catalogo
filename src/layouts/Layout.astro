@@ -1,0 +1,151 @@
+---
+const { title, activeNav } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title ? `${title} · ReservaLab` : 'ReservaLab'}</title>
+    <style>
+      @import '../styles/global.css';
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-content">
+        <a href="/" class="brand">ReservaLab</a>
+        <nav class="main-nav" aria-label="Principal">
+          <a href="/salas" class={activeNav === 'salas' ? 'active' : ''}>Salas</a>
+          <a href="/reservar" class={activeNav === 'reservar' ? 'active' : ''}>Reservar</a>
+          <a href="/mis-reservas" class={activeNav === 'mis-reservas' ? 'active' : ''}>Mis reservas</a>
+        </nav>
+        <button
+          type="button"
+          class="theme-toggle"
+          id="theme-toggle"
+          aria-label="Cambiar tema"
+          title="Cambiar tema"
+        >
+          🌙
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <span>© 2026 ReservaLab</span>
+        <span>Reserva de salas · demo</span>
+      </div>
+    </footer>
+
+    <script is:inline>
+      (function () {
+        const toggle = document.getElementById('theme-toggle');
+        const root = document.documentElement;
+        const saved = sessionStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let dark = saved ? saved === 'dark' : prefersDark;
+
+        function apply() {
+          root.setAttribute('data-theme', dark ? 'dark' : 'light');
+          toggle.textContent = dark ? '☀️' : '🌙';
+        }
+
+        apply();
+
+        toggle.addEventListener('click', () => {
+          dark = !dark;
+          sessionStorage.setItem('theme', dark ? 'dark' : 'light');
+          apply();
+        });
+      })();
+    </script>
+
+    <style>
+      .site-header {
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-4);
+        padding-top: var(--space-3);
+        padding-bottom: var(--space-3);
+      }
+      .brand {
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none;
+        color: var(--text-primary);
+      }
+      .main-nav {
+        display: flex;
+        gap: var(--space-1);
+        align-items: center;
+      }
+      .main-nav a {
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius);
+        text-decoration: none;
+        color: var(--text-secondary);
+        font-size: 13px;
+      }
+      .main-nav a:hover,
+      .main-nav a.active {
+        background: var(--background);
+        color: var(--text-primary);
+      }
+      .theme-toggle {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: var(--space-2);
+        cursor: pointer;
+        line-height: 1;
+      }
+      .theme-toggle:hover {
+        background: var(--background);
+      }
+      .main-content {
+        flex: 1;
+      }
+      .site-footer {
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+        margin-top: auto;
+      }
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--space-4);
+        padding-top: var(--space-4);
+        padding-bottom: var(--space-4);
+        color: var(--text-secondary);
+        font-size: 12px;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+      }
+      @media (max-width: 640px) {
+        .header-content {
+          flex-wrap: wrap;
+        }
+        .main-nav {
+          order: 3;
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    </style>
+  </body>
+</html>

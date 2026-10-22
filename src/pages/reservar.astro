@@ -1,0 +1,223 @@
+---
+import Layout from '../layouts/Layout.astro';
+import rooms from '../data/rooms.json';
+import { durationOptions, startTimeOptions } from '../lib/bookings.mjs';
+import { toISODate, formatBookingSummary } from '../lib/time.mjs';
+
+const today = toISODate(new Date('2026-10-22T19:43:00'));
+const roomId = Astro.url.searchParams.get('room') || rooms[0].id;
+---
+
+<Layout title="Reservar" activeNav="reservar">
+  <section class="page-section">
+    <div class="container narrow">
+      <p class="overline">Nueva reserva</p>
+      <h1>Reservar una sala</h1>
+      <p class="subtitle">Elige sala, fecha, hora y duración. Las reservas van de 30 minutos a 4 horas.</p>
+
+      <form id="booking-form" class="booking-form" novalidate>
+        <div class="field">
+          <label for="room">Sala</label>
+          <select id="room" name="room" required>
+            {rooms.map((room) => (
+              <option value={room.id} selected={room.id === roomId}>
+                {room.name} ({room.capacity} plazas)
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="date">Fecha</label>
+          <input type="date" id="date" name="date" value={today} min={today} required />
+          <p class="help">Solo hoy o fechas futuras.</p>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="start">Hora de inicio</label>
+            <select id="start" name="start" required>
+              <option value="" disabled selected>--:--</option>
+              {startTimeOptions().map((opt) => <option value={opt.value}>{opt.label}</option>)}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="duration">Duración</label>
+            <select id="duration" name="duration" required>
+              {durationOptions().map((opt) => <option value={String(opt.value)} selected={opt.value === 60}>{opt.label}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div class="summary" id="summary" aria-live="polite">
+          Completa los campos para ver el resumen.
+        </div>
+
+        <p class="error hidden" id="error" role="alert"></p>
+
+        <button type="submit" class="primary-button" id="submit">Confirmar reserva</button>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    import { getBookings, getRooms, addBooking } from '../lib/store.mjs';
+    import { createBooking } from '../lib/bookings.mjs';
+    import { formatBookingSummary } from '../lib/time.mjs';
+
+    const form = document.getElementById('booking-form');
+    const roomSelect = document.getElementById('room');
+    const dateInput = document.getElementById('date');
+    const startSelect = document.getElementById('start');
+    const durationSelect = document.getElementById('duration');
+    const summary = document.getElementById('summary');
+    const errorEl = document.getElementById('error');
+    const submitBtn = document.getElementById('submit');
+    const today = '2026-10-22';
+
+    const rooms = getRooms();
+
+    function roomName(id) {
+      return rooms.find((r) => r.id === id)?.name || id;
+    }
+
+    function updateSummary() {
+      const room = roomSelect.value;
+      const date = dateInput.value;
+      const start = startSelect.value;
+      const duration = Number(durationSelect.value);
+
+      errorEl.classList.add('hidden');
+
+      if (!room || !date || !start || !duration) {
+        summary.textContent = 'Completa los campos para ver el resumen.';
+        return;
+      }
+
+      summary.textContent = formatBookingSummary(roomName(room), date, start, duration);
+    }
+
+    form.addEventListener('input', updateSummary);
+    form.addEventListener('change', updateSummary);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorEl.classList.add('hidden');
+
+      const result = createBooking(
+        {
+          roomId: roomSelect.value,
+          date: dateInput.value,
+          start: startSelect.value,
+          duration: Number(durationSelect.value),
+        },
+        getBookings(),
+        new Date(`${today}T19:43:00`)
+      );
+
+      if (!result.ok) {
+        errorEl.textContent = result.error;
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      addBooking(result.booking);
+      window.location.href = '/mis-reservas';
+    });
+
+    updateSummary();
+  </script>
+
+  <style>
+    .page-section {
+      padding: var(--space-6) 0;
+    }
+    .narrow {
+      max-width: 520px;
+    }
+    .overline {
+      margin: 0 0 var(--space-2);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+    }
+    h1 {
+      margin: 0 0 var(--space-2);
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .subtitle {
+      margin: 0 0 var(--space-5);
+      color: var(--text-secondary);
+    }
+    .booking-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      flex: 1;
+    }
+    .field label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .field input,
+    .field select {
+      padding: var(--space-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text-primary);
+    }
+    .help {
+      margin: var(--space-1) 0 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    .row {
+      display: flex;
+      gap: var(--space-4);
+    }
+    .summary {
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+    }
+    .error {
+      padding: var(--space-3) var(--space-4);
+      background: color-mix(in srgb, var(--danger-text) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--danger-text) 30%, transparent);
+      border-radius: var(--radius);
+      color: var(--danger-text);
+    }
+    .primary-button {
+      align-self: flex-start;
+      background: var(--action-primary);
+      color: var(--text-primary);
+      border: none;
+      border-radius: var(--radius);
+      padding: var(--space-3) var(--space-4);
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .primary-button:hover {
+      background: var(--action-primary-hover);
+    }
+    .hidden {
+      display: none;
+    }
+    @media (max-width: 480px) {
+      .row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</Layout>

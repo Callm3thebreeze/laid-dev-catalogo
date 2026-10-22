@@ -9,9 +9,7 @@ const { title, activeNav } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title ? `${title} · ReservaLab` : 'ReservaLab'}</title>
-    <style>
-      @import '../styles/global.css';
-    </style>
+    <link rel="stylesheet" href="/src/styles/global.css" />
   </head>
   <body>
     <header class="site-header">
@@ -67,85 +65,5 @@ const { title, activeNav } = Astro.props;
         });
       })();
     </script>
-
-    <style>
-      .site-header {
-        border-bottom: 1px solid var(--border);
-        background: var(--surface);
-      }
-      .header-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--space-4);
-        padding-top: var(--space-3);
-        padding-bottom: var(--space-3);
-      }
-      .brand {
-        font-weight: 600;
-        font-size: 16px;
-        text-decoration: none;
-        color: var(--text-primary);
-      }
-      .main-nav {
-        display: flex;
-        gap: var(--space-1);
-        align-items: center;
-      }
-      .main-nav a {
-        padding: var(--space-2) var(--space-3);
-        border-radius: var(--radius);
-        text-decoration: none;
-        color: var(--text-secondary);
-        font-size: 13px;
-      }
-      .main-nav a:hover,
-      .main-nav a.active {
-        background: var(--background);
-        color: var(--text-primary);
-      }
-      .theme-toggle {
-        background: transparent;
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        padding: var(--space-2);
-        cursor: pointer;
-        line-height: 1;
-      }
-      .theme-toggle:hover {
-        background: var(--background);
-      }
-      .main-content {
-        flex: 1;
-      }
-      .site-footer {
-        border-top: 1px solid var(--border);
-        background: var(--surface);
-        margin-top: auto;
-      }
-      .footer-content {
-        display: flex;
-        justify-content: space-between;
-        gap: var(--space-4);
-        padding-top: var(--space-4);
-        padding-bottom: var(--space-4);
-        color: var(--text-secondary);
-        font-size: 12px;
-      }
-      body {
-        display: flex;
-        flex-direction: column;
-      }
-      @media (max-width: 640px) {
-        .header-content {
-          flex-wrap: wrap;
-        }
-        .main-nav {
-          order: 3;
-          width: 100%;
-          justify-content: center;
-        }
-      }
-    </style>
   </body>
 </html>

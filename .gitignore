@@ -25,4 +25,5 @@ pnpm-debug.log*
 
 # runtime / local tooling
 .playwright-mcp/
+screenshot-*.png
 

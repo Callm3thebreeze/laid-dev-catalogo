@@ -1,0 +1,10 @@
+{
+  "name": "laid-dev-catalog-lab",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "lint": "node --check src/version.mjs",
+    "typecheck": "node --check src/version.mjs"
+  }
+}

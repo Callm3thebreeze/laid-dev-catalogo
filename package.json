@@ -1,10 +1,20 @@
 {
-  "name": "laid-dev-catalog-lab",
-  "private": true,
+  "name": "reservalab",
   "type": "module",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "test": "node --test",
-    "lint": "node --check src/version.mjs",
-    "typecheck": "node --check src/version.mjs"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "astro": "^5.18.2"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

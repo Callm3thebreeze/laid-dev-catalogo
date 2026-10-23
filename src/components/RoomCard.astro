@@ -1,0 +1,28 @@
+---
+const { room } = Astro.props;
+
+const statusLabels = {
+  available: 'Disponible todo el día',
+  partial: 'Disponibilidad parcial',
+  occupied: 'No disponible',
+};
+---
+
+<article class="room-card" data-room-id={room.id}>
+  <div class="room-header">
+    <h3>{room.name}</h3>
+    <span class="capacity">{room.capacity} plazas</span>
+  </div>
+  <p class="description">{room.description}</p>
+  <p class="status" data-status={room.status}>
+    <span class="status-dot" aria-hidden="true"></span>
+    {statusLabels[room.status]}
+  </p>
+  <a
+    href={`/reservar?room=${room.id}`}
+    class="reserve-link"
+    data-disabled={room.status === 'occupied' ? 'true' : undefined}
+  >
+    Reservar
+  </a>
+</article>

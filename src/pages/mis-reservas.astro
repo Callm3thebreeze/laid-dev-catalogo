@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { listFutureBookings } from '../lib/bookings.mjs';
+import { formatBookingRange, formatDuration } from '../lib/time.mjs';
+import rooms from '../data/rooms.json';
+import bookings from '../data/bookings.json';
+
+const today = '2026-10-22';
+const now = new Date(`${today}T19:43:00`);
+const future = listFutureBookings(bookings, now);
+const roomMap = Object.fromEntries(rooms.map((r) => [r.id, r]));
+---
+
+<Layout title="Mis reservas" activeNav="mis-reservas">
+  <section class="page-section">
+    <div class="container narrow">
+      <p class="overline">Tus reservas</p>
+      <h1 class="page-title">Mis reservas</h1>
+      <p class="subtitle">Próximas reservas. Puedes cancelar las que aún no han empezado.</p>
+
+      <ul class="booking-list" id="booking-list">
+        {future.map((booking) => (
+          <li class="booking-item" data-booking-id={booking.id}>
+            <div class="booking-info">
+              <span class="range">{formatBookingRange(booking.date, booking.start, booking.duration)}</span>
+              <span class="details">
+                <strong>{roomMap[booking.roomId]?.name || booking.roomId}</strong> · {formatDuration(booking.duration)}
+              </span>
+            </div>
+            <button type="button" class="cancel-button" data-cancel={booking.id}>Cancelar</button>
+          </li>
+        ))}
+      </ul>
+
+      <p class="empty hidden" id="empty" role="status">No tienes reservas próximas.</p>
+    </div>
+  </section>
+
+  <script define:vars={{ today }}>
+    import { getBookings, getRooms, removeBooking } from '../lib/store.mjs';
+    import { listFutureBookings } from '../lib/bookings.mjs';
+    import { formatBookingRange, formatDuration } from '../lib/time.mjs';
+
+    const list = document.getElementById('booking-list');
+    const empty = document.getElementById('empty');
+    const rooms = getRooms();
+    const roomMap = Object.fromEntries(rooms.map((r) => [r.id, r]));
+
+    function render() {
+      const bookings = listFutureBookings(getBookings(), new Date(`${today}T19:43:00`));
+
+      if (bookings.length === 0) {
+        list.classList.add('hidden');
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      list.innerHTML = bookings
+        .map((b) => `
+          <li class="booking-item" data-booking-id="${b.id}">
+            <div class="booking-info">
+              <span class="range">${formatBookingRange(b.date, b.start, b.duration)}</span>
+              <span class="details">
+                <strong>${roomMap[b.roomId]?.name || b.roomId}</strong> · ${formatDuration(b.duration)}
+              </span>
+            </div>
+            <button type="button" class="cancel-button" data-cancel="${b.id}">Cancelar</button>
+          </li>
+        `)
+        .join('');
+      list.classList.remove('hidden');
+      empty.classList.add('hidden');
+
+      list.querySelectorAll('[data-cancel]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-cancel');
+          removeBooking(id);
+          render();
+        });
+      });
+    }
+
+    render();
+  </script>
+</Layout>

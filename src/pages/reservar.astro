@@ -1,0 +1,134 @@
+---
+import Layout from '../layouts/Layout.astro';
+import rooms from '../data/rooms.json';
+import { durationOptions, startTimeOptions } from '../lib/bookings.mjs';
+import { toISODate, formatBookingSummary } from '../lib/time.mjs';
+
+const today = toISODate(new Date('2026-10-22T19:43:00'));
+const roomId = Astro.url.searchParams.get('room') || rooms[0].id;
+const defaultStart = '20:00';
+---
+
+<Layout title="Reservar" activeNav="reservar">
+  <section class="page-section">
+    <div class="container narrow">
+      <p class="overline">Nueva reserva</p>
+      <h1 class="page-title">Reservar una sala</h1>
+      <p class="subtitle">Elige sala, fecha, hora y duración. Las reservas van de 30 minutos a 4 horas.</p>
+
+      <form id="booking-form" class="booking-form" novalidate>
+        <div class="field">
+          <label for="room">Sala</label>
+          <select id="room" name="room" required>
+            {rooms.map((room) => (
+              <option value={room.id} selected={room.id === roomId}>
+                {room.name} ({room.capacity} plazas)
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="date">Fecha</label>
+          <input type="date" id="date" name="date" value={today} min={today} required />
+          <p class="help">Solo hoy o fechas futuras.</p>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="start">Hora de inicio</label>
+            <select id="start" name="start" required>
+              {startTimeOptions().map((opt) => <option value={opt.value} selected={opt.value === defaultStart}>{opt.label}</option>)}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="duration">Duración</label>
+            <select id="duration" name="duration" required>
+              {durationOptions().map((opt) => <option value={String(opt.value)} selected={opt.value === 60}>{opt.label}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div class="summary" id="summary" aria-live="polite">
+          {formatBookingSummary(rooms.find((r) => r.id === roomId)?.name || roomId, today, defaultStart, 60)}
+        </div>
+
+        <p class="error hidden" id="error" role="alert"></p>
+
+        <button type="submit" class="primary-button" id="submit">Confirmar reserva</button>
+      </form>
+    </div>
+  </section>
+
+  <script define:vars={{ defaultStart, today }}>
+    import { getBookings, getRooms, addBooking } from '../lib/store.mjs';
+    import { createBooking } from '../lib/bookings.mjs';
+    import { formatBookingSummary } from '../lib/time.mjs';
+
+    const form = document.getElementById('booking-form');
+    const roomSelect = document.getElementById('room');
+    const dateInput = document.getElementById('date');
+    const startSelect = document.getElementById('start');
+    const durationSelect = document.getElementById('duration');
+    const summary = document.getElementById('summary');
+    const errorEl = document.getElementById('error');
+
+    const rooms = getRooms();
+
+    function roomName(id) {
+      return rooms.find((r) => r.id === id)?.name || id;
+    }
+
+    function updateSummary() {
+      const room = roomSelect.value;
+      const date = dateInput.value;
+      const start = startSelect.value;
+      const duration = Number(durationSelect.value);
+
+      errorEl.classList.add('hidden');
+
+      if (!room || !date || !start || !duration) {
+        summary.textContent = 'Completa los campos para ver el resumen.';
+        return;
+      }
+
+      summary.textContent = formatBookingSummary(roomName(room), date, start, duration);
+    }
+
+    form.addEventListener('input', updateSummary);
+    form.addEventListener('change', updateSummary);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorEl.classList.add('hidden');
+
+      const result = createBooking(
+        {
+          roomId: roomSelect.value,
+          date: dateInput.value,
+          start: startSelect.value,
+          duration: Number(durationSelect.value),
+        },
+        getBookings(),
+        new Date(`${today}T19:43:00`)
+      );
+
+      if (!result.ok) {
+        errorEl.textContent = result.error;
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      addBooking(result.booking);
+      window.location.href = '/mis-reservas';
+    });
+
+    updateSummary();
+
+    // Asegurar que el resumen se calcula una vez el DOM está estable.
+    requestAnimationFrame(() => {
+      updateSummary();
+    });
+  </script>
+</Layout>

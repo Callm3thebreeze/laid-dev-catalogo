@@ -1,0 +1,44 @@
+{
+  "agreement_ref": "docs/agreement_ref.md",
+  "data_policy": "Solo información autorizada y ejemplos sintéticos; sin datos personales de producción ni secretos.",
+  "owner": "Laura Martín",
+  "mode": "mixta",
+  "tracker": {
+    "adapter": "backlog/jira",
+    "project": "LAID1",
+    "cloud_id": "b4f08756-fbe3-4e1f-a5e0-fb460aaf023f",
+    "site_url": "https://laude-ailab.atlassian.net",
+    "ai_fields": {
+      "mode": null,
+      "percent": null
+    },
+    "metadata_fallback": "description",
+    "glossary": {},
+    "allowed_fields": [
+      "summary",
+      "description",
+      "status",
+      "issuetype",
+      "parent",
+      "updated",
+      "priority",
+      "assignee"
+    ],
+    "allowed_actions": [
+      "transition",
+      "sprint",
+      "sprint_start",
+      "sprint_close",
+      "create",
+      "comment",
+      "comment_edit",
+      "comment_delete"
+    ],
+    "board_id": 298,
+    "sprint_field": null
+  },
+  "approvers": {
+    "po": "Laura Martín",
+    "jp": "Laura Martín"
+  }
+}

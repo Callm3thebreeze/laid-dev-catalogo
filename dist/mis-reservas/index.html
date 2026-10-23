@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.18.2"><title>Mis reservas · ReservaLab</title><link rel="stylesheet" href="/src/styles/global.css"></head> <body> <header class="site-header"> <div class="container header-content"> <a href="/" class="brand">ReservaLab</a> <nav class="main-nav" aria-label="Principal"> <a href="/salas" class>Salas</a> <a href="/reservar" class>Reservar</a> <a href="/mis-reservas" class="active">Mis reservas</a> </nav> <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Cambiar tema">
+🌙
+</button> </div> </header> <main class="main-content">  <section class="page-section"> <div class="container narrow"> <p class="overline">Tus reservas</p> <h1 class="page-title">Mis reservas</h1> <p class="subtitle">Próximas reservas. Puedes cancelar las que aún no han empezado.</p> <ul class="booking-list" id="booking-list"> <li class="booking-item" data-booking-id="b1"> <div class="booking-info"> <span class="range">vie, 23 oct · 10:00–11:00</span> <span class="details"> <strong>Atlas</strong> · 1 h </span> </div> <button type="button" class="cancel-button" data-cancel="b1">Cancelar</button> </li><li class="booking-item" data-booking-id="b2"> <div class="booking-info"> <span class="range">sáb, 24 oct · 15:00–16:30</span> <span class="details"> <strong>Luna</strong> · 1 h 30 min </span> </div> <button type="button" class="cancel-button" data-cancel="b2">Cancelar</button> </li> </ul> <p class="empty hidden" id="empty" role="status">No tienes reservas próximas.</p> </div> </section> <script>(function(){const today = "2026-10-22";
+
+    import { getBookings, getRooms, removeBooking } from '../lib/store.mjs';
+    import { listFutureBookings } from '../lib/bookings.mjs';
+    import { formatBookingRange, formatDuration } from '../lib/time.mjs';
+
+    const list = document.getElementById('booking-list');
+    const empty = document.getElementById('empty');
+    const rooms = getRooms();
+    const roomMap = Object.fromEntries(rooms.map((r) => [r.id, r]));
+
+    function render() {
+      const bookings = listFutureBookings(getBookings(), new Date(`${today}T19:43:00`));
+
+      if (bookings.length === 0) {
+        list.classList.add('hidden');
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      list.innerHTML = bookings
+        .map((b) => `
+          <li class="booking-item" data-booking-id="${b.id}">
+            <div class="booking-info">
+              <span class="range">${formatBookingRange(b.date, b.start, b.duration)}</span>
+              <span class="details">
+                <strong>${roomMap[b.roomId]?.name || b.roomId}</strong> · ${formatDuration(b.duration)}
+              </span>
+            </div>
+            <button type="button" class="cancel-button" data-cancel="${b.id}">Cancelar</button>
+          </li>
+        `)
+        .join('');
+      list.classList.remove('hidden');
+      empty.classList.add('hidden');
+
+      list.querySelectorAll('[data-cancel]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-cancel');
+          removeBooking(id);
+          render();
+        });
+      });
+    }
+
+    render();
+  })();</script>  </main> <footer class="site-footer"> <div class="container footer-content"> <span>© 2026 ReservaLab</span> <span>Reserva de salas · demo</span> </div> </footer> <script>
+      (function () {
+        const toggle = document.getElementById('theme-toggle');
+        const root = document.documentElement;
+        const saved = sessionStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let dark = saved ? saved === 'dark' : prefersDark;
+
+        function apply() {
+          root.setAttribute('data-theme', dark ? 'dark' : 'light');
+          toggle.textContent = dark ? '☀️' : '🌙';
+        }
+
+        apply();
+
+        toggle.addEventListener('click', () => {
+          dark = !dark;
+          sessionStorage.setItem('theme', dark ? 'dark' : 'light');
+          apply();
+        });
+      })();
+    </script> </body> </html>

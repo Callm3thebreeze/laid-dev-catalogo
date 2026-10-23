@@ -1,0 +1,57 @@
+- generic [active] [ref=f36e1]:
+  - banner [ref=f36e2]:
+    - generic [ref=f36e3]:
+      - link "ReservaLab" [ref=f36e4] [cursor=pointer]:
+        - /url: /
+      - navigation "Principal" [ref=f36e5]:
+        - link "Salas" [ref=f36e6] [cursor=pointer]:
+          - /url: /salas
+        - link "Reservar" [ref=f36e7] [cursor=pointer]:
+          - /url: /reservar
+        - link "Mis reservas" [ref=f36e8] [cursor=pointer]:
+          - /url: /mis-reservas
+      - button "Cambiar tema" [ref=f36e9] [cursor=pointer]: 🌙
+  - main [ref=f36e10]:
+    - generic [ref=f36e12]:
+      - generic [ref=f36e13]:
+        - generic [ref=f36e14]:
+          - paragraph [ref=f36e15]: Disponibilidad
+          - heading "Salas" [level=1] [ref=f36e16]
+          - paragraph [ref=f36e17]: Consulta la ocupación de cada sala para la fecha que elijas.
+        - generic [ref=f36e18]:
+          - generic [ref=f36e19]: Fecha
+          - textbox "Fecha" [ref=f36e20]: 2026-10-22
+      - generic [ref=f36e21]:
+        - article [ref=f36e22]:
+          - generic [ref=f36e23]:
+            - heading "Atlas" [level=3] [ref=f36e24]
+            - generic [ref=f36e25]: 8 plazas
+          - paragraph [ref=f36e26]: Sala grande con pantalla 4K y pizarra.
+          - paragraph [ref=f36e27]: Disponible todo el día
+          - link "Reservar" [ref=f36e29] [cursor=pointer]:
+            - /url: /reservar?room=atlas
+        - article [ref=f36e30]:
+          - generic [ref=f36e31]:
+            - heading "Luna" [level=3] [ref=f36e32]
+            - generic [ref=f36e33]: 6 plazas
+          - paragraph [ref=f36e34]: Sala mediana, ideal para equipos de trabajo.
+          - paragraph [ref=f36e35]: Disponible todo el día
+          - link "Reservar" [ref=f36e37] [cursor=pointer]:
+            - /url: /reservar?room=luna
+        - article [ref=f36e38]:
+          - generic [ref=f36e39]:
+            - heading "Sol" [level=3] [ref=f36e40]
+            - generic [ref=f36e41]: 12 plazas
+          - paragraph [ref=f36e42]: Sala de formación con videoconferencia.
+          - paragraph [ref=f36e43]: Disponible todo el día
+          - link "Reservar" [ref=f36e45] [cursor=pointer]:
+            - /url: /reservar?room=sol
+  - contentinfo [ref=f36e46]:
+    - generic [ref=f36e47]:
+      - generic [ref=f36e48]: © 2026 ReservaLab
+      - generic [ref=f36e49]: Reserva de salas · demo
+  - generic [ref=f36e52]:
+    - button [ref=f36e53]
+    - button [ref=f36e59]
+    - button [ref=f36e63]
+    - button [ref=f36e68]

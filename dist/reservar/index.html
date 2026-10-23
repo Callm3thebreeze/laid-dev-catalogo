@@ -1,0 +1,98 @@
+<!DOCTYPE html><html lang="es"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><meta name="generator" content="Astro v5.18.2"><title>Reservar · ReservaLab</title><link rel="stylesheet" href="/src/styles/global.css"></head> <body> <header class="site-header"> <div class="container header-content"> <a href="/" class="brand">ReservaLab</a> <nav class="main-nav" aria-label="Principal"> <a href="/salas" class>Salas</a> <a href="/reservar" class="active">Reservar</a> <a href="/mis-reservas" class>Mis reservas</a> </nav> <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema" title="Cambiar tema">
+🌙
+</button> </div> </header> <main class="main-content">  <section class="page-section"> <div class="container narrow"> <p class="overline">Nueva reserva</p> <h1 class="page-title">Reservar una sala</h1> <p class="subtitle">Elige sala, fecha, hora y duración. Las reservas van de 30 minutos a 4 horas.</p> <form id="booking-form" class="booking-form" novalidate> <div class="field"> <label for="room">Sala</label> <select id="room" name="room" required> <option value="atlas" selected> Atlas (8 plazas)
+</option><option value="luna"> Luna (6 plazas)
+</option><option value="sol"> Sol (12 plazas)
+</option> </select> </div> <div class="field"> <label for="date">Fecha</label> <input type="date" id="date" name="date" value="2026-10-22" min="2026-10-22" required> <p class="help">Solo hoy o fechas futuras.</p> </div> <div class="form-row"> <div class="field"> <label for="start">Hora de inicio</label> <select id="start" name="start" required> <option value="08:00">08:00</option><option value="08:30">08:30</option><option value="09:00">09:00</option><option value="09:30">09:30</option><option value="10:00">10:00</option><option value="10:30">10:30</option><option value="11:00">11:00</option><option value="11:30">11:30</option><option value="12:00">12:00</option><option value="12:30">12:30</option><option value="13:00">13:00</option><option value="13:30">13:30</option><option value="14:00">14:00</option><option value="14:30">14:30</option><option value="15:00">15:00</option><option value="15:30">15:30</option><option value="16:00">16:00</option><option value="16:30">16:30</option><option value="17:00">17:00</option><option value="17:30">17:30</option><option value="18:00">18:00</option><option value="18:30">18:30</option><option value="19:00">19:00</option><option value="19:30">19:30</option><option value="20:00" selected>20:00</option> </select> </div> <div class="field"> <label for="duration">Duración</label> <select id="duration" name="duration" required> <option value="30">30 minutos</option><option value="60" selected>1 hora</option><option value="90">1 hora 30 minutos</option><option value="120">2 horas</option><option value="150">2 horas 30 minutos</option><option value="180">3 horas</option><option value="210">3 horas 30 minutos</option><option value="240">4 horas</option> </select> </div> </div> <div class="summary" id="summary" aria-live="polite"> Atlas · jue, 22 oct · 20:00–21:00 (1 h) </div> <p class="error hidden" id="error" role="alert"></p> <button type="submit" class="primary-button" id="submit">Confirmar reserva</button> </form> </div> </section> <script>(function(){const defaultStart = "20:00";
+const today = "2026-10-22";
+
+    import { getBookings, getRooms, addBooking } from '../lib/store.mjs';
+    import { createBooking } from '../lib/bookings.mjs';
+    import { formatBookingSummary } from '../lib/time.mjs';
+
+    const form = document.getElementById('booking-form');
+    const roomSelect = document.getElementById('room');
+    const dateInput = document.getElementById('date');
+    const startSelect = document.getElementById('start');
+    const durationSelect = document.getElementById('duration');
+    const summary = document.getElementById('summary');
+    const errorEl = document.getElementById('error');
+
+    const rooms = getRooms();
+
+    function roomName(id) {
+      return rooms.find((r) => r.id === id)?.name || id;
+    }
+
+    function updateSummary() {
+      const room = roomSelect.value;
+      const date = dateInput.value;
+      const start = startSelect.value;
+      const duration = Number(durationSelect.value);
+
+      errorEl.classList.add('hidden');
+
+      if (!room || !date || !start || !duration) {
+        summary.textContent = 'Completa los campos para ver el resumen.';
+        return;
+      }
+
+      summary.textContent = formatBookingSummary(roomName(room), date, start, duration);
+    }
+
+    form.addEventListener('input', updateSummary);
+    form.addEventListener('change', updateSummary);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorEl.classList.add('hidden');
+
+      const result = createBooking(
+        {
+          roomId: roomSelect.value,
+          date: dateInput.value,
+          start: startSelect.value,
+          duration: Number(durationSelect.value),
+        },
+        getBookings(),
+        new Date(`${today}T19:43:00`)
+      );
+
+      if (!result.ok) {
+        errorEl.textContent = result.error;
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      addBooking(result.booking);
+      window.location.href = '/mis-reservas';
+    });
+
+    updateSummary();
+
+    // Asegurar que el resumen se calcula una vez el DOM está estable.
+    requestAnimationFrame(() => {
+      updateSummary();
+    });
+  })();</script>  </main> <footer class="site-footer"> <div class="container footer-content"> <span>© 2026 ReservaLab</span> <span>Reserva de salas · demo</span> </div> </footer> <script>
+      (function () {
+        const toggle = document.getElementById('theme-toggle');
+        const root = document.documentElement;
+        const saved = sessionStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let dark = saved ? saved === 'dark' : prefersDark;
+
+        function apply() {
+          root.setAttribute('data-theme', dark ? 'dark' : 'light');
+          toggle.textContent = dark ? '☀️' : '🌙';
+        }
+
+        apply();
+
+        toggle.addEventListener('click', () => {
+          dark = !dark;
+          sessionStorage.setItem('theme', dark ? 'dark' : 'light');
+          apply();
+        });
+      })();
+    </script> </body> </html>

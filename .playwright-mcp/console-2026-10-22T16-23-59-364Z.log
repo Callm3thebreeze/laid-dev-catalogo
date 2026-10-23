@@ -1,6 +1,0 @@
-[  148419ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:4321/mis-reservas:0
-[  148443ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:4321/favicon.ico:0
-[  154529ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:4321/mis-reservas:0
-[  159326ms] Cannot use import statement outside a module
-[  165367ms] Cannot use import statement outside a module
-[  168678ms] Cannot use import statement outside a module

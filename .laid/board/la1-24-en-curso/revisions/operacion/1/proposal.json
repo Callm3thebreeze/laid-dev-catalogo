@@ -1,0 +1,184 @@
+{
+  "format": 2,
+  "summary": "Pasar la tarea LAID1-24 al estado En curso",
+  "instruction_ref": "Petición humana: pasar la tarea 'Implementar login mockeado' (LAID1-24) a En curso",
+  "session_ref": "opencode-session:ses_e9844f988ffe8yEpVxR4uoTNna",
+  "model": "klia/deepseek-v4-pro",
+  "synthetic_data": true,
+  "inputs": [
+    "Lectura protegida actual de LAID1-24",
+    "Catálogo de transiciones de LAID1-24"
+  ],
+  "source_files": [],
+  "change_reason": "Petición humana de comenzar el trabajo",
+  "blocking_issues": [],
+  "open_questions": [],
+  "checks": [
+    {
+      "id": "operation_scope",
+      "status": "passed",
+      "evidence": "#evidence/scope"
+    },
+    {
+      "id": "impact_review",
+      "status": "passed",
+      "evidence": "#evidence/impact"
+    }
+  ],
+  "evidence": {
+    "scope": "Solo cambia el estado de LAID1-24. No modifica descripción ni asignación.",
+    "impact": "Destino no terminado (En curso, categoría indeterminate). IDs de transición (21) y destino (10326) distintos, obtenidos de Jira; sin campos obligatorios adicionales."
+  },
+  "operation": {
+    "operation_id": "la1-24-en-curso",
+    "action": "transition",
+    "reason": "Comenzar el trabajo",
+    "source_ref": "Lectura protegida real de LAID1-24 (baseline_ref 8af963e1-a2ec-4da5-9fd4-8d985458fc97)",
+    "expected_updated": "2026-10-23T09:50:07.749+0200",
+    "target": {
+      "kind": "task",
+      "project": "LAID1",
+      "id": "LAID1-24"
+    },
+    "changes": {
+      "status": {
+        "id": "10326"
+      }
+    },
+    "reaches_done": false,
+    "ai_usage": {
+      "mode": "mixta",
+      "percent": null
+    },
+    "evidence": [
+      "#evidence/scope",
+      "#evidence/impact"
+    ],
+    "dod": []
+  },
+  "connector_plan": {
+    "adapter": "backlog/jira",
+    "steps": [
+      {
+        "tool": "atlassian_transitionJiraIssue",
+        "baseline_ref": "8af963e1-a2ec-4da5-9fd4-8d985458fc97",
+        "options_ref": "76e93acc-dbcc-45dc-b0f3-35d53c5c08c3",
+        "arguments": {
+          "cloudId": "b4f08756-fbe3-4e1f-a5e0-fb460aaf023f",
+          "issueIdOrKey": "LAID1-24",
+          "transitionId": "21"
+        },
+        "baseline": {
+          "issue": "LAID1-24",
+          "cloud_id": "b4f08756-fbe3-4e1f-a5e0-fb460aaf023f",
+          "project": "LAID1",
+          "url": "https://laude-ailab.atlassian.net/browse/LAID1-24",
+          "fields": {
+            "assignee": null,
+            "description": "Como usuario quiero iniciar sesión con una cuenta de demo para acceder a la app de reserva de salas.\n\nAlcance:\n\n* Pantalla de login inicial con estilo del design system actual.\n* Credenciales definidas en variables de entorno (.env): MOCK_USER y MOCK_PASSWORD.\n* Validación server-side mediante API route de Astro (/api/login).\n* Sesión mock almacenada en sessionStorage.\n* Redirección de /login a /salas tras login válido.\n* Todas las páginas internas (/salas, /reservar, /mis-reservas) requieren sesión; si no, redirigen a /login.\n\nBloque LAID:  \nModo de ejecución: mixta\n\nLAID-OP: crear-tarea-login",
+            "issuetype": {
+              "id": "10379",
+              "description": "Un trabajo pequeño e independiente.",
+              "name": "Tarea",
+              "subtask": false,
+              "entityId": "70bbba09-8621-451b-aa34-7504421f86e4",
+              "hierarchyLevel": 0
+            },
+            "parent": null,
+            "priority": {
+              "name": "Medium",
+              "id": "3"
+            },
+            "project": {
+              "id": "10297",
+              "key": "LAID1",
+              "name": "LAID Test Space",
+              "projectTypeKey": "software",
+              "simplified": true
+            },
+            "status": {
+              "description": "",
+              "name": "Tareas por hacer",
+              "id": "10325",
+              "statusCategory": {
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "Por hacer"
+              }
+            },
+            "summary": "Implementar login mockeado",
+            "updated": "2026-10-23T09:50:07.749+0200",
+            "_laid_sprint_assigned": false
+          },
+          "sha256": "9025a67d2920a7661736c5a8abd9d3f31350d7feacf0a8ccd9cf56036f51b0aa",
+          "read_at": "2026-10-23T07:50:30.927Z",
+          "source": "opencode-session:ses_e984299d8ffeuKx4H0jwF0PC7Y#msg_167bd66c9001I8ejzwsjOEOlxU/call_7cka6hs6"
+        },
+        "options": {
+          "issue": "LAID1-24",
+          "kind": "transitions",
+          "values": [
+            {
+              "id": "11",
+              "name": "Por hacer",
+              "to": {
+                "name": "Tareas por hacer",
+                "statusCategory": {
+                  "key": "new"
+                },
+                "id": "10325"
+              },
+              "fields": {},
+              "available": true
+            },
+            {
+              "id": "21",
+              "name": "En curso",
+              "to": {
+                "name": "En curso",
+                "statusCategory": {
+                  "key": "indeterminate"
+                },
+                "id": "10326"
+              },
+              "fields": {},
+              "available": true
+            },
+            {
+              "id": "31",
+              "name": "Listo",
+              "to": {
+                "name": "Finalizada",
+                "statusCategory": {
+                  "key": "done"
+                },
+                "id": "10327"
+              },
+              "fields": {},
+              "available": true
+            },
+            {
+              "id": "2",
+              "name": "Blocked",
+              "to": {
+                "name": "Blocked",
+                "statusCategory": {
+                  "key": "new"
+                },
+                "id": "10328"
+              },
+              "fields": {},
+              "available": true
+            }
+          ],
+          "sessionID": "ses_e9844f988ffe8yEpVxR4uoTNna",
+          "request": "msg_167bb06f9001Da5XYRfjNUfCpq",
+          "time": 1792741832121,
+          "baseline_sha256": "9025a67d2920a7661736c5a8abd9d3f31350d7feacf0a8ccd9cf56036f51b0aa"
+        }
+      }
+    ],
+    "guard": "fresh-issue-v1"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "story": "LAID1-24 Implementar login mockeado",
+  "objective": "Pasar la tarea LAID1-24 al estado En curso mediante la transición disponible.",
+  "criteria": {},
+  "execution_mode": "mixta",
+  "sources": [
+    "Petición humana: pasar la tarea creada a En curso",
+    "Lectura protegida de LAID1-24 (baseline_ref 8af963e1-a2ec-4da5-9fd4-8d985458fc97, sha256 9025a67d2920a7661736c5a8abd9d3f31350d7feacf0a8ccd9cf56036f51b0aa)",
+    "Catálogo de transiciones (options_ref 76e93acc-dbcc-45dc-b0f3-35d53c5c08c3)"
+  ]
+}

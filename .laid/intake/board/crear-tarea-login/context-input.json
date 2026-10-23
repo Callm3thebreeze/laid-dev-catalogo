@@ -1,0 +1,10 @@
+{
+  "story": "Implementar login mockeado",
+  "objective": "Crear una nueva Tarea en el proyecto LAID1 con el título y la descripción indicados y, después, pasarla a estado En curso.",
+  "criteria": {},
+  "execution_mode": "mixta",
+  "sources": [
+    "Petición humana: crear tarea 'Implementar login mockeado' en LAID1 y pasarla a En curso",
+    "Lectura protegida laid_jira_create_options (baseline_ref bb643a3e-9036-477c-b59e-3fab5342f139, sha256 e7367eea630b8e4c08ac6a0767fce5401ea8eb3e55e2c49ed420194c04e9b498)"
+  ]
+}

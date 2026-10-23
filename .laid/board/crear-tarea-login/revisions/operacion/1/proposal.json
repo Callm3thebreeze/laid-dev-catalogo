@@ -1,0 +1,213 @@
+{
+  "format": 2,
+  "summary": "Crear una Tarea en LAID1 y pasarla a En curso",
+  "instruction_ref": "Petición humana: crear tarea 'Implementar login mockeado' en el proyecto Jira LAID1 y pasarla a En curso",
+  "session_ref": "opencode-session:ses_e9844f988ffe8yEpVxR4uoTNna",
+  "model": "klia/deepseek-v4-pro",
+  "synthetic_data": true,
+  "inputs": [
+    "Petición humana de creación y transición",
+    "Lectura protegida laid_jira_create_options de esta petición"
+  ],
+  "source_files": [],
+  "change_reason": "Necesidad confirmada por la persona de registrar una nueva tarea de implementación",
+  "blocking_issues": [],
+  "open_questions": [],
+  "checks": [
+    {
+      "id": "operation_scope",
+      "status": "passed",
+      "evidence": "#evidence/checks"
+    },
+    {
+      "id": "impact_review",
+      "status": "passed",
+      "evidence": "#evidence/checks"
+    }
+  ],
+  "evidence": {
+    "checks": "Búsqueda de requisitos similares y duplicados vacía (fields.duplicates [] por título normalizado y marcador). Tipo real 'Tarea' (id 10379, subtask false). Informador obligatorio resuelto por getJiraCurrentUser (accountId 712020:0265b74e-917e-458c-bfa5-03b6d1265ffc). Sin parent. Alta sin cierre ni otras mutaciones."
+  },
+  "operation": {
+    "operation_id": "crear-tarea-login",
+    "action": "create",
+    "reason": "Registrar la tarea de implementación solicitada",
+    "source_ref": "Petición humana y lectura protegida real de creación (baseline_ref bb643a3e-9036-477c-b59e-3fab5342f139)",
+    "target": {
+      "kind": "task",
+      "project": "LAID1",
+      "id": "local:crear-tarea-login"
+    },
+    "expected_updated": "e7367eea630b8e4c08ac6a0767fce5401ea8eb3e55e2c49ed420194c04e9b498",
+    "changes": {
+      "title": "Implementar login mockeado",
+      "description": "Como usuario quiero iniciar sesión con una cuenta de demo para acceder a la app de reserva de salas.\n\nAlcance:\n- Pantalla de login inicial con estilo del design system actual.\n- Credenciales definidas en variables de entorno (.env): MOCK_USER y MOCK_PASSWORD.\n- Validación server-side mediante API route de Astro (/api/login).\n- Sesión mock almacenada en sessionStorage.\n- Redirección de /login a /salas tras login válido.\n- Todas las páginas internas (/salas, /reservar, /mis-reservas) requieren sesión; si no, redirigen a /login.\n\nBloque LAID:\nModo de ejecución: mixta\n\nLAID-OP: crear-tarea-login",
+      "issuetype": {
+        "id": "10379"
+      }
+    },
+    "reaches_done": false,
+    "ai_usage": {
+      "mode": "mixta",
+      "percent": null
+    },
+    "evidence": [
+      "#evidence/checks"
+    ],
+    "dod": []
+  },
+  "connector_plan": {
+    "adapter": "backlog/jira",
+    "steps": [
+      {
+        "tool": "atlassian_createJiraIssue",
+        "baseline_ref": "bb643a3e-9036-477c-b59e-3fab5342f139",
+        "arguments": {
+          "cloudId": "b4f08756-fbe3-4e1f-a5e0-fb460aaf023f",
+          "projectKey": "LAID1",
+          "issueType": "Tarea",
+          "summary": "Implementar login mockeado",
+          "description": "Como usuario quiero iniciar sesión con una cuenta de demo para acceder a la app de reserva de salas.\n\nAlcance:\n- Pantalla de login inicial con estilo del design system actual.\n- Credenciales definidas en variables de entorno (.env): MOCK_USER y MOCK_PASSWORD.\n- Validación server-side mediante API route de Astro (/api/login).\n- Sesión mock almacenada en sessionStorage.\n- Redirección de /login a /salas tras login válido.\n- Todas las páginas internas (/salas, /reservar, /mis-reservas) requieren sesión; si no, redirigen a /login.\n\nBloque LAID:\nModo de ejecución: mixta\n\nLAID-OP: crear-tarea-login",
+          "additional_fields": {
+            "reporter": {
+              "accountId": "712020:0265b74e-917e-458c-bfa5-03b6d1265ffc"
+            }
+          }
+        },
+        "baseline": {
+          "kind": "creation",
+          "project": "LAID1",
+          "cloud_id": "b4f08756-fbe3-4e1f-a5e0-fb460aaf023f",
+          "input": {
+            "operation_id": "crear-tarea-login",
+            "summary": "Implementar login mockeado",
+            "kind": "task",
+            "issue_type_id": "10379"
+          },
+          "fields": {
+            "operation_id": "crear-tarea-login",
+            "summary": "Implementar login mockeado",
+            "kind": "task",
+            "type": {
+              "id": "10379",
+              "name": "Tarea",
+              "subtask": false,
+              "kind": "task"
+            },
+            "reporter": {
+              "accountId": "712020:0265b74e-917e-458c-bfa5-03b6d1265ffc"
+            },
+            "fields": [
+              {
+                "id": "assignee",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "attachment",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "customfield_10000",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "customfield_10001",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "customfield_10015",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "customfield_10016",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "customfield_10019",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "customfield_10020",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "customfield_10021",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "description",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "duedate",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "issuelinks",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "issuerestriction",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "issuetype",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "labels",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "parent",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "priority",
+                "required": false,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "project",
+                "required": true,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "reporter",
+                "required": true,
+                "hasDefaultValue": false
+              },
+              {
+                "id": "summary",
+                "required": true,
+                "hasDefaultValue": false
+              }
+            ],
+            "parent": null,
+            "duplicates": []
+          },
+          "sha256": "e7367eea630b8e4c08ac6a0767fce5401ea8eb3e55e2c49ed420194c04e9b498",
+          "read_at": "2026-10-23T07:48:29.045Z",
+          "source": "opencode-session:ses_e98448329ffeb6vOaeohKN7rsq#msg_167bb7d7d001olxWPFEFzsHYDn/call_3nwttgwp"
+        }
+      }
+    ],
+    "guard": "fresh-create-v1"
+  }
+}

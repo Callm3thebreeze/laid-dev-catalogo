@@ -1,0 +1,18 @@
+[
+  {
+    "id": "b1",
+    "roomId": "atlas",
+    "date": "2026-10-23",
+    "start": "10:00",
+    "duration": 60,
+    "ownerId": "demo"
+  },
+  {
+    "id": "b2",
+    "roomId": "luna",
+    "date": "2026-10-24",
+    "start": "15:00",
+    "duration": 90,
+    "ownerId": "demo"
+  }
+]

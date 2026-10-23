@@ -1,0 +1,20 @@
+[
+  {
+    "id": "atlas",
+    "name": "Atlas",
+    "capacity": 8,
+    "description": "Sala grande con pantalla 4K y pizarra."
+  },
+  {
+    "id": "luna",
+    "name": "Luna",
+    "capacity": 6,
+    "description": "Sala mediana, ideal para equipos de trabajo."
+  },
+  {
+    "id": "sol",
+    "name": "Sol",
+    "capacity": 12,
+    "description": "Sala de formación con videoconferencia."
+  }
+]
